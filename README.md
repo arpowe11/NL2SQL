@@ -1,4 +1,4 @@
-# NL2SQL 🎯
+# NL2SQL 🎯 (IN DEVELOPMENT)
 Natural Language to SQL Query Generator
 
 ## 📌 Overview
@@ -21,3 +21,4 @@ NL2SQL is a full-stack application that converts natural language queries into S
 
 ## 📂 Project Structure
 (see [docs/architecture.md](./docs/architecture.md) for full details)
+
