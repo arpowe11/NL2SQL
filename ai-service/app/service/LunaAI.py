@@ -8,6 +8,7 @@ from langchain_core.chat_history import InMemoryChatMessageHistory, BaseChatMess
 
 import app.config as config
 
+
 class LunaAI:
     def __init__(self, model: str=None, temp: float=0.5):
         load_dotenv(find_dotenv())

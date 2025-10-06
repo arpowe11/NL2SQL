@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, Response
 from .service.LunaAI import LunaAI
 from .auth import require_api_key
 
@@ -9,13 +9,13 @@ luna_ai = None
 
 @bp.route('/', methods=['GET'])
 @require_api_key
-def index():
+def index() -> tuple[Response, int]:
     return jsonify({"message": "Welcome to Luna AI!"}), 200
 
 
 @bp.route('/chat', methods=["POST", "OPTIONS"])
 @require_api_key
-def get_response():
+def get_response() -> tuple[Response, int]:
     if request.method == "OPTIONS":
         return jsonify({}), 204
 
