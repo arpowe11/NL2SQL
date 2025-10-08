@@ -4,19 +4,50 @@ import chatWindowStyles from "../assets/styles/chatWindowStyles";
 const ChatWindow: React.FC = () => {
     const [message, setMessage] = useState<string>("");
     const [chat, setChat] = useState<string[]>([]);
+    const baseUrl: string = import.meta.env.VITE_APP_API_URL
+    const testKey: string = import.meta.env.VITE_APP_API_TOKEN
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!message.trim()) return;
 
         // Add user message
         setChat((prev) => [...prev, `You: ${message}`]);
 
-        // TODO: Change this with a fetch to get the actual ai response via the api
-        // Simulate AI response
-        setTimeout(() => {
-            setChat((prev) => [...prev, `I received your message "${message}"`]);
-        }, 1000);
+        try {
+            // Fetch the api and send request information
+            const apiUrl = `${baseUrl}/api/chat`;
+            const response = await fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${testKey}`
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    question: message
+                })
+            });
+
+            // Get the request information and process the response data
+            let result;
+            const data = await response.text();
+            if (data) {
+                result = JSON.parse(data);
+            }
+
+            // Get the AIs response from the response data
+            let aiMessage: string;
+            if (response.ok) {
+                aiMessage = result?.response || "Failed to get response."
+                setChat((prev) => [...prev, aiMessage]);
+            } else {
+                alert("Failed to fetch response");
+                console.error("API error:", result?.error || "Failed to get error message");
+            }
+        } catch (err) {
+            console.error(err);
+        }
 
         setMessage("");
     }

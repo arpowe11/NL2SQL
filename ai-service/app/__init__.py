@@ -15,10 +15,12 @@ def create_app() -> Flask:
         resources={r"/api/*": {"origins": origins}},
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
+	    methods=["GET", "POST", "OPTIONS"]
     )
 
     # Register your blueprints
     from .routes import bp
     app.register_blueprint(bp)
+    
 
     return app

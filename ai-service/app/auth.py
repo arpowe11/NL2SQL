@@ -10,8 +10,11 @@ API_KEY = os.getenv("INTERNAL_API_KEY")
 def require_api_key(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        if request.method == "OPTIONS":
+            return "", 204
+            
         key = request.headers.get("Authorization")
         if key is None or key != f"Bearer {API_KEY}":
-            return jsonify({"error": "Unauthorized"}), 401
+            return jsonify({"error": "Unauthorized, No key provided"}), 401
         return f(*args, **kwargs)
     return decorated

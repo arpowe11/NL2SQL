@@ -5,10 +5,10 @@ from pathlib import Path
 # Testing
 DEBUG = True
 HOST = "127.0.0.1"
-PORT = 5000
+PORT = 5001
 
 # Security
-CORS_ORIGINS = ("http://localhost:3000", "http://localhost:3001")
+CORS_ORIGINS = ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"]
 
 # Extra
 BASE_DIR = Path(__file__).resolve().parent.parent
