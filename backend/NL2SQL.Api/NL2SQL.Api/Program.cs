@@ -1,8 +1,18 @@
+using DotNetEnv;
+using NL2SQL.Api.Config;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
+// Environment settings
+Env.Load();
+builder.Services.AddSingleton<AppSettings>();
+
+builder.Services.AddHttpClient();
+
+// Add controllers
 builder.Services.AddControllers();
 
+// TODO: Maybe move security configs to its own namespace
 //Configure CORS
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowFrontend", policy => {
