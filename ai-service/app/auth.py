@@ -12,7 +12,7 @@ def require_api_key(f):
     def decorated(*args, **kwargs):
         if request.method == "OPTIONS":
             return "", 204
-            
+
         key = request.headers.get("Authorization")
         if key is None or key != f"Bearer {API_KEY}":
             return jsonify({"error": "Unauthorized, No key provided"}), 401

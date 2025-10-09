@@ -102,4 +102,5 @@ build/
 .idea/
 .vscode/
 *.swp
+.DS_STORE
 
