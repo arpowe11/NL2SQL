@@ -102,5 +102,6 @@ build/
 .idea/
 .vscode/
 *.swp
-.DS_STORE
+.DS_Store/
+*/.DS_Store
 

@@ -5,7 +5,6 @@ const ChatWindow: React.FC = () => {
     const [message, setMessage] = useState<string>("");
     const [chat, setChat] = useState<string[]>([]);
     const baseUrl: string = import.meta.env.VITE_APP_API_URL
-    const testKey: string = import.meta.env.VITE_APP_API_TOKEN
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -13,6 +12,7 @@ const ChatWindow: React.FC = () => {
 
         // Add user message
         setChat((prev) => [...prev, `You: ${message}`]);
+        setMessage("");
 
         try {
             // Fetch the api and send request information
@@ -21,11 +21,11 @@ const ChatWindow: React.FC = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${testKey}`
                 },
                 credentials: "include",
                 body: JSON.stringify({
-                    question: message
+                    question: message,
+                    session_id: "user-1"
                 })
             });
 
@@ -48,8 +48,6 @@ const ChatWindow: React.FC = () => {
         } catch (err) {
             console.error(err);
         }
-
-        setMessage("");
     }
 
     return (

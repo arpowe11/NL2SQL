@@ -24,8 +24,10 @@ namespace NL2SQL.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ChatRequest req)
         {
-            if (string.IsNullOrEmpty(req.Question) || string.IsNullOrEmpty(req.SessionId))
-                return BadRequest("Missing question or session_id");
+            if (string.IsNullOrEmpty(req.Question))
+                return BadRequest("Missing question");
+            if (string.IsNullOrEmpty(req.SessionId))
+                req.SessionId = "default-key";
 
             var client = _httpClientFactory.CreateClient();
 
@@ -72,9 +74,8 @@ namespace NL2SQL.Api.Controllers
                     return Ok(new { luna = lunaValue.GetString() });
                 }
             }
-            catch
-            {
-                // fallback to raw response
+            catch {
+                return Content("There was an error getting a response");
             }
 
             // Return full raw response if no "luna" field
