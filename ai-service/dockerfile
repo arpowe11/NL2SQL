@@ -20,5 +20,5 @@ ENV PYTHONUNBUFFERED=1 \
     GUNICORN_CMD_ARGS="--bind 0.0.0.0:5000 --workers 3 --timeout 120"
 
 # Use Gunicorn to run the Flask app
-CMD ["gunicorn", "app:app"]
+CMD ["gunicorn", "app:create_app()"]
 
