@@ -1,10 +1,11 @@
 import React, {useState} from "react";
+import env from "../config/env"
 import chatWindowStyles from "../assets/styles/chatWindowStyles";
 
 const ChatWindow: React.FC = () => {
     const [message, setMessage] = useState<string>("");
     const [chat, setChat] = useState<string[]>([]);
-    const baseUrl: string = import.meta.env.VITE_APP_API_URL
+    const baseUrl: string = env.VITE_APP_API_URL;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
