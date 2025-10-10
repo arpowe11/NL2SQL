@@ -1,0 +1,49 @@
+name: CI/CD Frontend + Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+
+    # ---------- DOCKER LOGIN ----------
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to ACR
+      uses: docker/login-action@v2
+      with:
+        registry: lunaairegistry.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    # ---------- BUILD & PUSH FRONTEND ----------
+    - name: Build Frontend Docker Image
+      run: docker build -t lunaairegistry.azurecr.io/client:latest ./frontend
+
+    - name: Push Frontend Docker Image
+      run: docker push lunaairegistry.azurecr.io/client:latest
+
+    # ---------- BUILD & PUSH BACKEND ----------
+    - name: Build Backend Docker Image
+      run: docker build -t lunaairegistry.azurecr.io/server:latest ./backend/NLSQL.Api
+
+    - name: Push Backend Docker Image
+      run: docker push lunaairegistry.azurecr.io/server:latest
+
+    # ---------- BUILD & PUSH AI SERVICE ----------
+    - name: Build AI Service Docker Image
+      run: docker build -t lunaairegistry.azurecr.io/ai-service:latest ./ai-service
+
+    - name: Push AI Service Docker Image
+      run: docker push lunaairegistry.azurecr.io/ai-service:latest
