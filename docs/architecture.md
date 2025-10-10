@@ -11,8 +11,8 @@ The system converts a user’s natural language question into a valid SQL query 
 ```
 ┌─────────────┐        HTTPS         ┌──────────────────┐       HTTP        ┌─────────────────────┐
 │ React Front │ <------------------> │ ASP.NET Backend  │ <---------------> │ Python AI Service   │
-│   (Client)  │                       │  (Web API)      │                   │  (FastAPI/Flask)    │
-└─────────────┘                        └──────────────────┘                   └─────────────────────┘
+│   (Client)  │                      │  (Web API)       │                   │  (FastAPI/Flask)    │
+└─────────────┘                      └──────────────────┘                   └─────────────────────┘
        |                                        |
        |              SQL Queries               |
        └--------------------------------------> │
@@ -62,7 +62,7 @@ The system converts a user’s natural language question into a valid SQL query 
 
 ## Deployment
 
-- **Docker Compose** manages multi-container deployment:
+- **Docker Compose** manages multi-container deployment for a micro-service delpoyment architecture:
   - `frontend` → React app served via Nginx or Vite dev server.
   - `backend` → ASP.NET API container.
   - `ai-service` → Python service container.
