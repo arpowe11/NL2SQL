@@ -1,22 +1,47 @@
-import React, {useState} from "react";
-import env from "../config/env"
+import React, { useState, useEffect } from "react";
+import env from "../config/env";
 import chatWindowStyles from "../assets/styles/chatWindowStyles";
+
+interface ChatMessage {
+    id: number;
+    sender: "user" | "ai";
+    text: string;
+}
 
 const ChatWindow: React.FC = () => {
     const [message, setMessage] = useState<string>("");
-    const [chat, setChat] = useState<string[]>([]);
+    const [chat, setChat] = useState<ChatMessage[]>([]);
+    const [thinkingDots, setThinkingDots] = useState<string>(""); // for animation
     const baseUrl: string = env.VITE_APP_API_URL;
+
+    useEffect(() => {
+        // Animate "Thinking..." dots every 500ms
+        const interval = setInterval(() => {
+            setThinkingDots((prev) => (prev.length < 3 ? prev + "." : ""));
+        }, 500);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!message.trim()) return;
 
-        // Add user message
-        setChat((prev) => [...prev, `You: ${message}`]);
+        // Create user message with unique ID
+        const userId = Date.now();
+        const userMessage: ChatMessage = {
+            id: userId,
+            sender: "user",
+            text: message,
+        };
+
+        setChat((prev) => [...prev, userMessage]);
         setMessage("");
 
+        // Create Thinking message with a small offset to ensure unique ID
+        const thinkingId = userId + 1;
+        setChat((prev) => [...prev, { id: thinkingId, sender: "ai", text: "Thinking" }]);
+
         try {
-            // Fetch the api and send request information
             const apiUrl = `${baseUrl}/api/chat`;
             const response = await fetch(apiUrl, {
                 method: "POST",
@@ -26,37 +51,41 @@ const ChatWindow: React.FC = () => {
                 credentials: "include",
                 body: JSON.stringify({
                     question: message,
-                    session_id: "user-1"
-                })
+                    session_id: "user-1", // TODO: make dynamic, eventually
+                }),
             });
 
-            // Get the request information and process the response data
-            let result;
-            const data = await response.text();
-            if (data) {
-                result = JSON.parse(data);
-            }
+            const data = await response.json();
+            const aiMessage = response.ok ? data?.response || "Failed to get response." : "Error fetching response";
 
-            // Get the AIs response from the response data
-            let aiMessage: string;
-            if (response.ok) {
-                aiMessage = result?.response || "Failed to get response."
-                setChat((prev) => [...prev, aiMessage]);
-            } else {
-                alert("Failed to fetch response");
-                console.error("API error:", result?.error || "Failed to get error message");
-            }
+            // Replace "Thinking..." with actual AI message
+            setChat((prev) =>
+                prev.map((msg) =>
+                    msg.id === thinkingId ? { ...msg, text: aiMessage } : msg
+                )
+            );
         } catch (err) {
             console.error(err);
+            setChat((prev) =>
+                prev.map((msg) =>
+                    msg.id === thinkingId ? { ...msg, text: "Error, try again." } : msg
+                )
+            );
         }
-    }
+    };
 
     return (
         <div style={chatWindowStyles.container}>
+            <div style={chatWindowStyles.header}><h1>LunaAI</h1></div>
             <div style={chatWindowStyles.chatBox}>
-                {chat.map((msg, index) => (
-                    <div key={index} style={msg.startsWith("You:") ? chatWindowStyles.userMsg : chatWindowStyles.aiMsg}>
-                        {msg.startsWith("You:") ? msg.replace("You:", "") : msg}
+                {chat.map((msg) => (
+                    <div
+                        key={msg.id}
+                        style={msg.sender === "user" ? chatWindowStyles.userMsg : chatWindowStyles.aiMsg}
+                    >
+                        {msg.sender === "ai" && msg.text === "Thinking"
+                            ? `Thinking${thinkingDots}`
+                            : msg.text}
                     </div>
                 ))}
             </div>
@@ -69,10 +98,12 @@ const ChatWindow: React.FC = () => {
                     onChange={(e) => setMessage(e.target.value)}
                     style={chatWindowStyles.input}
                 />
-                <button type="submit" style={chatWindowStyles.submitButton}>Send</button>
+                <button type="submit" style={chatWindowStyles.submitButton}>
+                    Send
+                </button>
             </form>
         </div>
-    )
-}
+    );
+};
 
 export default ChatWindow;

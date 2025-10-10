@@ -12,6 +12,17 @@ const chatWindowStyles: { [key: string]: React.CSSProperties} = {
         padding: "10px",
         backgroundColor: "#fafafa",
     },
+    header: {
+        backgroundColor: "#000000",
+        width: "100%",   // full width of container
+        height: "50px",  // set a height
+        margin: "-10px -10px 0 -10px", // negate container padding
+        borderTopLeftRadius: "10px",
+        borderTopRightRadius: "10px",
+        display: "flex",
+        alignItems: "center",
+        padding: "0 10px", // internal padding if needed
+    },
     chatBox: {
         flex: 1,
         overflowY: "auto",
