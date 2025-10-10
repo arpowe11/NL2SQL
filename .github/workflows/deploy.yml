@@ -36,7 +36,7 @@ jobs:
 
     # ---------- BUILD & PUSH BACKEND ----------
     - name: Build Backend Docker Image
-      run: docker build -t lunaairegistry.azurecr.io/server:latest ./backend/NLSQL.Api
+      run: docker build -t lunaairegistry.azurecr.io/server:latest ./backend/NL2SQL.Api
 
     - name: Push Backend Docker Image
       run: docker push lunaairegistry.azurecr.io/server:latest
