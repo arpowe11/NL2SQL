@@ -16,7 +16,10 @@ builder.Services.AddControllers();
 //Configure CORS
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowFrontend", policy => {
-        policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
+        policy.WithOrigins(
+                "https://lunaaiclient-eahehnbpg8cueufp.canadacentral-01.azurewebsites.net", 
+                "http://localhost:5173", 
+                "http://localhost:5174")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
